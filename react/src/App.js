@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import FirstChat from './Components/Chat/First/firstchat';
 import SecondChat from './Components/Chat/Second/secondchat';
-import {Main} from './Components/Main/main';
+import Main from './Components/Main/main';
 import {NavLink,Route,Switch,Redirect} from 'react-router-dom';
 
 class App extends Component {
@@ -12,7 +12,7 @@ class App extends Component {
       <div className="container">
       <ul>
           <li>
-            <NavLink activeClassName="active" to="/" >Home</NavLink>
+            <NavLink activeClassName="active" to="/" >News</NavLink>
           </li>
           <li>
             <NavLink activeClassName="active" to="/chatauth">Chat</NavLink>
