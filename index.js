@@ -2,11 +2,13 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const socket = require('socket.io');
+var cors = require('cors')
 
 const news = require('./routes/api/news');
 
 const app = express();
 
+app.use(cors());
 mongoose.connect('mongodb://localhost:27017/minor-news-app', { useNewUrlParser: true });
 
 const db = mongoose.connection;
