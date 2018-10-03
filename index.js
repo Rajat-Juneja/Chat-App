@@ -1,9 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const socket = require('socket.io');
+const passport = require('passport');
+const session = require('express-session');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const news = require('./routes/api/news');
+const auth = require('./routes/api/auth');
 
 const app = express();
 
@@ -16,9 +21,20 @@ db.once('open', () => {
 });
 
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(session({
+    secret: "Its a secret",
+    resave: false,
+    saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passport/passport-local');
 users=[];
 connections=[];
 
+app.use('/auth', auth);
 app.use('/api/news', news); 
 
 var server = app.listen(process.env.PORT||5000, () => {
