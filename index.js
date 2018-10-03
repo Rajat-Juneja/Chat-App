@@ -6,12 +6,14 @@ const socket = require('socket.io');
 const passport = require('passport');
 const session = require('express-session');
 const passportLocalMongoose = require('passport-local-mongoose');
+var cors = require('cors')
 
 const news = require('./routes/api/news');
 const auth = require('./routes/api/auth');
 
 const app = express();
 
+app.use(cors());
 mongoose.connect('mongodb://localhost:27017/minor-news-app', { useNewUrlParser: true });
 
 const db = mongoose.connection;
