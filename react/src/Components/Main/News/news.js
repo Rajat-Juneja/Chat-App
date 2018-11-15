@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import './news.css';
+import Comments from './comments';
 
 export default class News extends Component{
     constructor(props){
@@ -35,7 +36,26 @@ export default class News extends Component{
             }).catch(err=>console.log(err));
         }).catch(err=>console.log(err));
     }
+    addComment(object){
+        var comm = this.refs.comment.value;
+        this.refs.comment.value='';
+        var obj = {
+            id:object.id,
+            comment:comm,
+            category:object.category
+        }
+        //  Send category, and article id,comment
+        fetch('http://localhost:5000/api/news/addComment',{
+            method:'POST',
+            body:JSON.stringify(obj),
+            headers:{
+                'Content-Type': 'application/json'
+            }
+        }).then(response=>{response.json().then(data=>this.setState({})).catch(err=>console.log(err))}).catch(err=>console.log(err));
+        // this.setState({});
+    }
     render(){
+        
         if(!this.got){
             return(
                 <div className="midd">
@@ -48,6 +68,7 @@ export default class News extends Component{
             <div>
                 {this.state.data.map(Obj=>{
                     return(
+                        <div>
                         <a className="full col-sm-12 col-12"  key={Obj.publishedAt} href={Obj.url} onClick={()=>{
                             if(Obj.category){
                             this.sendRec(Obj.category,Obj._id);
@@ -59,8 +80,17 @@ export default class News extends Component{
                             <p>{Obj.description+'...'} </p>
                             <p>Source : {Obj.source.name}</p>
                         </a>
+                            <input type="text" placeholder="Enter comment" ref="comment" onSubmit={this.addComment.bind(this,Obj)}/>
+                            {  
+                                this.state.data.comments.map(com=>{
+                                    <Comments text={com.text} key={com._id}/>
+                
+                                })
+                            }
+                            </div>
                     )
                 })}
+            
             </div>
         )
     }
