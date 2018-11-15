@@ -3,6 +3,7 @@ import './App.css';
 import FirstChat from './Components/Chat/First/firstchat';
 import SecondChat from './Components/Chat/Second/secondchat';
 import Main from './Components/Main/main';
+import Auth from './Components/Main/Auth/Auth';
 import {NavLink,Route,Switch,Redirect} from 'react-router-dom';
 
 class App extends Component {
@@ -20,7 +21,8 @@ class App extends Component {
         </ul>
 
         <Switch>
-          <Route path="/" exact component={Main}></Route>
+          <Route path="/" exact component={Auth}></Route>
+          <Route path="/main" exact component={Main}></Route>
           <Route path="/chatauth" exact component={FirstChat}></Route>
           <Route path="/chat" exact component={SecondChat}></Route>
           <Redirect to="/"/>

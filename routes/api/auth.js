@@ -3,6 +3,10 @@ const passport = require('passport');
 const User = require('../../models/user');
 const sources = require('../../util/get-sources');
 
+router.get("/getUsers", async (req, res) => {
+  const users = await User.find();
+  res.json(users.length);
+})
 
 router.post("/signin", function (req, res) {
   const categories = ['business', 'entertainment', 'health', 'sports', 'science', 'technology'];
@@ -12,16 +16,19 @@ router.post("/signin", function (req, res) {
   newUser.password = newUser.encryptPassword(req.body.password);
   let i = 0;
   for(let category of categories) {
+    let counter = 0;
     let sourceArr = sources[category];
     sourceArr = sourceArr.map(item => {
+      let ctr = Math.floor(Math.random() * 150);
+      counter += ctr;
       return {
         source: item,
-        count: 0
+        count: ctr
       };
     });
     newUser.news.push({
       category: category,
-      count: 0
+      count: counter
     });
     newUser.news[i].sources = [];
     sourceArr.forEach(item => newUser.news[i].sources.push(item));

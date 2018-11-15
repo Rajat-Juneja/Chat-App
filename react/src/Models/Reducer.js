@@ -13,5 +13,6 @@ export const Reducer = (state={},action) =>{
         state={...state,users:action.payLoad.users};
         return state;
     }
+
     return state;
 }
