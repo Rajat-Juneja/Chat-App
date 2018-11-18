@@ -5,6 +5,7 @@ module.exports = async function (category) {
   let articles = [];
   try {
     const query = `pageSize=15&sources=${sources[category].join(',')}`;
+    console.log(query)
     const res = await fetch(`https://newsapi.org/v2/top-headlines?${query}`, {
       method: 'GET',
       headers: {

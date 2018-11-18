@@ -1,17 +1,36 @@
 const router = require('express').Router();
+const fetch = require('node-fetch');
 const uuid = require('uuid/v1');
 const News = require('../../models/news');
 const getNews = require('../../util/fetch-news');
 const User = require('../../models/user');
 
-router.get('/recommended', async (req, res) => {
+router.get('/recommended', (req, res) => {
   const { PythonShell } = require('python-shell');
   PythonShell.run('pyScripts/test.py', {
     args: [req.query.name]
-  }, function (err, data) {
+  }, async (err, data) => {
     if(err) res.send(err);
-    // const user = await User.findById('5be0242e4057e069601ee58d')
-    res.send();
+    let src = JSON.parse(data[0]);
+    let arr = [];
+    for(let key in src) {
+      src[key] = src[key] / 5;
+      arr.push([key, src[key]]);
+    }
+    arr.sort((a, b) => b[1] - a[1]);
+    let query = arr.slice(0, 5)
+                   .reduce(
+                     (acc, curr) => acc + curr[0] + ',',
+                      '');
+    query = query.slice(0, query.length - 1);
+    const response = await fetch(`https://newsapi.org/v2/top-headlines?pageSize=15&sources=${query}`, {
+      method: 'GET',
+      headers: {
+        'X-Api-Key': process.env.API_KEY
+      }
+    });
+    const articles = await response.json();
+    res.json([...articles.articles]);
   });
 });
 
@@ -83,5 +102,15 @@ router.get('/:category/:id', async (req, res) => {
   }
   res.end();
 });
+
+router.post('/comment', async (req, res) => {
+  console.log(req.body);
+  const news = await News.findOne({ category: req.body.category });
+  const article = news.articles.filter(article => article.id === req.body.id);
+  console.log(article[0].comments);
+  article[0].comments.push(req.body.comment);
+  news.save(() => console.log('Updated Successfully'));
+  res.send(article);
+})
 
 module.exports = router;

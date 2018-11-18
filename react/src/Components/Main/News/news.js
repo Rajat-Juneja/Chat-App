@@ -36,16 +36,23 @@ export default class News extends Component{
             }).catch(err=>console.log(err));
         }).catch(err=>console.log(err));
     }
-    addComment(object){
-        var comm = this.refs.comment.value;
+    addComment(e,object){
+        if((e.which|| e.keyCode) !== 13){
+            return;
+        }
+        var comm = e.target.value;
+        console.log(comm);
         this.refs.comment.value='';
         var obj = {
             id:object.id,
-            comment:comm,
+            comment:{
+                body: comm,
+                sentiment: 'Good'
+            },
             category:object.category
         }
         //  Send category, and article id,comment
-        fetch('http://localhost:5000/api/news/addComment',{
+        fetch('http://localhost:5000/api/news/comment',{
             method:'POST',
             body:JSON.stringify(obj),
             headers:{
@@ -67,6 +74,7 @@ export default class News extends Component{
             return(
             <div>
                 {this.state.data.map(Obj=>{
+                    console.log(Obj);
                     return(
                         <div>
                         <a className="full col-sm-12 col-12"  key={Obj.publishedAt} href={Obj.url} onClick={()=>{
@@ -80,13 +88,16 @@ export default class News extends Component{
                             <p>{Obj.description+'...'} </p>
                             <p>Source : {Obj.source.name}</p>
                         </a>
-                            <input type="text" placeholder="Enter comment" ref="comment" onSubmit={this.addComment.bind(this,Obj)}/>
                             {  
-                                this.state.data.comments.map(com=>{
-                                    <Comments text={com.text} key={com._id}/>
+
+                                Obj.comments.map(com=>{
+                                    return(
+                                    <Comments text={com.body} key={com._id} sentiment={com.sentiment}/>
+                                    )
                 
                                 })
                             }
+                            <input type="text" placeholder="Enter comment" ref="comment" onKeyDown={(e) => this.addComment(e, Obj)} />
                             </div>
                     )
                 })}
@@ -105,7 +116,11 @@ export default class News extends Component{
             response.json().then(data=>{
                 // console.log("Got Data");
                 this.got=true;
+                for(let i=0;i<data.articles.length;i++){
+                    data.articles[i].comments=[];
+                }
                 this.setState({data:data.articles});
+                console.log(data.articles);
                 this.setState({});
             }).catch(err=>console.log(err));
         }).catch(err=>console.log(err));

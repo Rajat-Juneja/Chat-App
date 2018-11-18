@@ -13,7 +13,7 @@ class App extends Component {
       <div className="container">
       <ul>
           <li>
-            <NavLink activeClassName="active" to="/" >News</NavLink>
+            <NavLink activeClassName="active" to="/main" >News</NavLink>
           </li>
           <li>
             <NavLink activeClassName="active" to="/chatauth">Chat</NavLink>

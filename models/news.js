@@ -15,7 +15,11 @@ const newsSchema = new mongoose.Schema({
     publishedAt: String,
     content: String,
     category: String,
-    id: String
+    id: String,
+    comments: [{
+      body: String,
+      sentiment: String
+    }]
   }] 
 });
 

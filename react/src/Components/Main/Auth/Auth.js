@@ -107,6 +107,7 @@ export class Auth extends Component {
         password: this.state.controls.password.value
       }).then(res => {
         localStorage.setItem('userId', res.data._id);
+        this.props.history.push('/main');
       }).catch(err => console.log(err));
     } else {
       axios.post('http://localhost:5000/auth/login', {
@@ -114,6 +115,7 @@ export class Auth extends Component {
         password: this.state.controls.password.value
       }).then(res => {
         localStorage.setItem('userId', res.data._id);
+        this.props.history.push('/main');
       }).catch(err => console.log(err))
     }
   }
